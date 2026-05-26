@@ -1,0 +1,11 @@
+.DS_Store
+.ipynb_checkpoints/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Python cache
+__pycache__/
+*.pyc
