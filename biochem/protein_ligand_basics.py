@@ -12,7 +12,6 @@ from rdkit.Chem.EnumerateStereoisomers import EnumerateStereoisomers, StereoEnum
 import gemmi
 from collections import defaultdict
 import warnings
-from admet_ai import ADMETModel
 from .dock_utilities import *
 
 # Turn off rdkit warning
@@ -396,6 +395,7 @@ def calculate_ligand_info(smiles: str = None, sdf_file: str = None) -> dict:
 
 def admet_predict(smiles: str) -> dict:
     """ADMET prediction based on ADMET-AI"""
+    from admet_ai import ADMETModel
 
     def ADMETModel_init_silent():
 
