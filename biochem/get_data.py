@@ -19,9 +19,9 @@ def uniprot2seq(uniprot_id: str) -> str:
         return f'Error in uniprot id {uniprot_id}'
 
 
-def get_pdb(pdb_id: str, file_dir: str = 'files') -> dict:
+def get_pdb(pdb_id: str, file_dir: str = None) -> dict:
     """Download the pdb file the protein given the pdb id"""
-    file_dir = os.getenv("FILE_DIR", file_dir)
+    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     url = f"https://files.rcsb.org/download/{pdb_id}.pdb"
     response = requests.get(url)
     if response.status_code == 200:
@@ -45,16 +45,16 @@ def read_csv(csv_file: str) -> str:
     df = pd.read_csv(csv_file)
     return df.to_csv(index=False)
 
-def write_text_file(txt: str, file_name: str, file_dir: str = 'files') -> None:
+def write_text_file(txt: str, file_name: str, file_dir: str = None) -> None:
     """Write plain text file; file_name should include the extension.*"""
-    file_dir = os.getenv("FILE_DIR", file_dir)
+    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     file_name = os.path.join(file_dir, file_name)
     with open(file_name, "w", encoding="utf-8") as f:
         f.write(txt)
 
-def read_text_file(file_name: str, file_dir: str = 'files') -> str:
+def read_text_file(file_name: str, file_dir: str = None) -> str:
     """Read plain text file; file_name should include the extension.*"""
-    file_dir = os.getenv("FILE_DIR", file_dir)
+    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     file_name = os.path.join(file_dir, file_name)
     with open(file_name, "r", encoding="utf-8") as f:
         return f.read()

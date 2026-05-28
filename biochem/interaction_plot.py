@@ -454,14 +454,14 @@ def interaction_plot(nodes_csv_dir: str,
                      edges_csv_dir: str,
                      style: dict|None = None,
                      file_name: str = 'interaction_plot',
-                     file_dir: str = 'files',
+                     file_dir: str = None,
                     ) -> dict:
     """Visuzalize Protein-ligand interactions given complex results from `get_protein_ligand_interaction` tool"""
     # 1) Reads raw node/edge CSVs for a complex.
     # 2) Reindexes ligand/protein atoms into a compact, contiguous index space.
     # 5) Saves the plot as an HTML file.
 
-    file_dir = os.getenv("FILE_DIR", file_dir)
+    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # -------------------------------------------------------------------------
     # 1) READ & REINDEX

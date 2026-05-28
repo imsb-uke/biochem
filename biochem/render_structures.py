@@ -189,10 +189,10 @@ def render_structures(
     height: int = 800,
     zoom: bool = True,
     file_name: str = 'my_protein',
-    file_dir: str = 'files',
+    file_dir: str = None,
 ) -> dict:
     """Render multiple molecular files with fine-grained control. Read the help doc get_tools_doc('render_structures')"""
-    file_dir = os.getenv("FILE_DIR", file_dir)
+    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # Build viewer
     viewer = py3Dmol.view(width=width, height=height)

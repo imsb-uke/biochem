@@ -44,12 +44,12 @@ def run_esm3(
     # token = ESM3_TOKEN,
     protein_name = 'my_protein',
     model_name = 'esm3-large-2024-03',
-    file_dir: str = 'files'
+    file_dir: str = None
     ) -> dict:
 
     """This function performs all ESM3 analysis, including protein folding, inverse folding, sequence completion, aminoacis annotation, etc."""
 
-    file_dir = os.getenv("FILE_DIR", file_dir)
+    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     token = ESM3_TOKEN
 
     protein_input_keys = ['pkl_file', 'pdb_file', 'sequence', 'sasa', 'function', 'residue_annotations']
