@@ -342,6 +342,7 @@ def run_molecular_docking(query_table_dir: str,
                           project_name: str = 'my_docking',
                           redock: bool = False,
                           use_docker: bool = False,  # claude
+                          software_dir: str = None,  # claude
                           file_dir: str = None,
                          ):
     """Perfom molecular docking using VINA, SMINA, GNINA or DiffDock"""
@@ -385,7 +386,7 @@ def run_molecular_docking(query_table_dir: str,
                 'output_pdbqt_dir' : dock_pdbqt_dir,
             }
 
-            run_docking(query_dict, use_docker=use_docker, method=docking_method, n_cpu=n_cpu, exh=exhaustiveness)  # claude
+            run_docking(query_dict, use_docker=use_docker, software_dir=software_dir, method=docking_method, n_cpu=n_cpu, exh=exhaustiveness)  # claude
             # !echo {i} >> output.log
 
             # Extract pose sdf files
