@@ -414,24 +414,43 @@ def select_conformer_sdf(sdf_in, sdf_out, conformer_number=0):
 
 
 ###### Docking
-def run_docking(query_dict, method = 'smina', n_cpu = 1, exh = 16):
+def run_docking(query_dict, use_docker=False, method='smina', n_cpu=1, exh=16):
+    """
+    Run a single docking job using the specified method.
+
+    use_docker: set True on Mac (or any system without native binaries) to run
+                via Docker instead of the local software/ binaries.
+                On Linux / inside the bcai Docker container, leave False (default)
+                and make sure the binaries are present in software/.
+
+    NOTE — Docker commands for vina and gnina are not yet defined.
+           If you need Docker support for those methods, add the
+           docker run ... command in the vina() / gnina() inner functions below
+           (same pattern as smina).
+    """
 
     #########  make aliases
     # %alias vina Softwares/vina
     def vina(*args):
+        if use_docker:
+            # TODO: add Docker command for vina when needed
+            raise NotImplementedError("Docker mode not yet defined for vina. Use binary (use_docker=False).")
         command = 'software/vina ' + args[0]
         os.system(command)
-        
+
     # %alias smina Softwares/smina.static
     def smina(*args):
-        # Linux production: use the smina binary directly
-        # command = 'software/smina.static ' + args[0]
-        # Mac dev: use Docker (comment out for Linux deployment)
-        command = 'docker run --rm --platform linux/amd64 -v "$PWD":/work -w /work my/smina:static ' + args[0]
+        if use_docker:
+            command = 'docker run --rm --platform linux/amd64 -v "$PWD":/work -w /work my/smina:static ' + args[0]
+        else:
+            command = 'software/smina.static ' + args[0]
         os.system(command)
-            
+
     # %alias gnina Softwares/gnina
     def gnina(*args):
+        if use_docker:
+            # TODO: add Docker command for gnina when needed
+            raise NotImplementedError("Docker mode not yet defined for gnina. Use binary (use_docker=False).")
         command = 'software/gnina ' + args[0]
         os.system(command)
     
