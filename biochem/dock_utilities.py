@@ -484,27 +484,27 @@ def run_docking(query_dict, use_docker=False, method='smina', n_cpu=1, exh=16, s
         start = time.time()
         vina(f""" --receptor {Target_pdbqt_dir} --ligand {Ligand_pdbqt_dir} \
         --out {dock_output_pdbqt_dir} --config {constraint_file_dir} --cpu {n_cpu} \
-        --exhaustiveness {exh} --verbosity 2 | tee {dock_output_log_dir}""")
+        --exhaustiveness {exh} --verbosity 2 >> {dock_output_log_dir} 2>&1""")  # claude: redirect away from MCP stdout pipe
 
     if method == 'smina':
         smina(f""" --receptor {Target_pdbqt_dir} --ligand {Ligand_pdbqt_dir} \
         --out {dock_output_pdbqt_dir} --config {constraint_file_dir} --cpu {n_cpu} \
-        --exhaustiveness {exh} --verbosity 2 | tee {dock_output_log_dir}""")
-    
+        --exhaustiveness {exh} --verbosity 2 >> {dock_output_log_dir} 2>&1""")  # claude: redirect away from MCP stdout pipe
+
     if method == 'gnina':
         gnina(f""" --receptor {Target_pdbqt_dir} --ligand {Ligand_pdbqt_dir} \
         --out {dock_output_pdbqt_dir} --config {constraint_file_dir} --cpu {n_cpu} \
-        --exhaustiveness {exh} --verbosity 2 --no_gpu| tee {dock_output_log_dir}""")                    #--no_gpu
-    
+        --exhaustiveness {exh} --verbosity 2 --no_gpu >> {dock_output_log_dir} 2>&1""")  # claude: redirect away from MCP stdout pipe  #--no_gpu
+
     if method == 'qvina':
         qvina(f""" --receptor {Target_pdbqt_dir} --ligand {Ligand_pdbqt_dir} \
         --out {dock_output_pdbqt_dir} --config {constraint_file_dir} --cpu {n_cpu} \
-        --exhaustiveness {exh} | tee {dock_output_log_dir}""")
-    
+        --exhaustiveness {exh} >> {dock_output_log_dir} 2>&1""")  # claude: redirect away from MCP stdout pipe
+
     if method == 'qvina2':
         qvina2(f""" --receptor {Target_pdbqt_dir} --ligand {Ligand_pdbqt_dir} \
         --out {dock_output_pdbqt_dir} --config {constraint_file_dir} --cpu {n_cpu} \
-        --exhaustiveness {exh} | tee {dock_output_log_dir}""")
+        --exhaustiveness {exh} >> {dock_output_log_dir} 2>&1""")  # claude: redirect away from MCP stdout pipe
 
     end = time.time()
     # print("output file generated:")
