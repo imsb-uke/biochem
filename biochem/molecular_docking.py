@@ -343,6 +343,7 @@ def run_molecular_docking(query_table_dir: str,
                           redock: bool = False,
                           use_docker: bool = False,  # claude
                           software_dir: str = None,  # claude
+                          stop_event = None,          # claude: threading.Event; set to cancel between compounds
                           file_dir: str = None,
                          ):
     """Perfom molecular docking using VINA, SMINA, GNINA or DiffDock"""
@@ -362,7 +363,10 @@ def run_molecular_docking(query_table_dir: str,
 
     start = time.time()
     for i in range(len(df)):
-
+        # claude ---
+        if stop_event and stop_event.is_set():
+            break
+        # ---
         if docking_method == 'diffdock':
             inference_steps = 10
             complex_name = df['protein_name'][i]
