@@ -433,28 +433,12 @@ def _ask_optional_color(prompt):
             return val
         print("  Invalid color. Use a named color (e.g. 'red') or hex like '#ff0000'. Try again.")
 
-def _resolve_symbol(sym):
-    """Return the exact symbol as in df_nodes if present, else None."""
-    s = sym.strip()
-    candidates = [s, s.capitalize(), s.upper(), s.lower()]
-    for cand in candidates:
-        if cand in symbols_raw:
-            return cand
-    return None
-
-def _resolve_feature(feat):
-    """Return the exact feature string as in df_edges if present, else None."""
-    f = feat.strip()
-    if f in features_raw:
-        return f
-    lower_map = {x.lower(): x for x in features_raw}
-    return lower_map.get(f.lower(), None)
 
 def interaction_plot(nodes_csv_dir: str,
                      edges_csv_dir: str,
                      style: dict|None = None,
                      file_name: str = 'interaction_plot',
-                     file_dir: str = None,
+                     file_dir: str,
                     ) -> dict:
     """Visuzalize Protein-ligand interactions given complex results from `get_protein_ligand_interaction` tool"""
     # 1) Reads raw node/edge CSVs for a complex.

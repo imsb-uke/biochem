@@ -267,7 +267,7 @@ def prepare_ligand(smiles: str = None,
                 {
                     'ligand_name' : [ligand_name],
                     'ligand_smiles' : [smiles],
-                    'ligsnd_sdf_file' : [ligand_sdf_dir],
+                    'ligand_sdf_file' : [ligand_sdf_dir],
                     'ligand_pdb_file' :  [ligand_pdb_dir],
                     'ligand_pdbqt_file' : [ligand_pdbqt_dir]
                 }
@@ -316,7 +316,7 @@ def make_query_table(protein_df_file: str,
 
     if docking_method == 'diffdock':
         df_combined['complex_name'] = df_combined['protein_name'] + '_' + df_combined['ligand_name']
-        df_combined = df_combined[['complex_name', 'protein_pdb_file', 'ligsnd_sdf_file', 'protein_sequence']]
+        df_combined = df_combined[['complex_name', 'protein_pdb_file', 'ligand_sdf_file', 'protein_sequence']]
         df_combined.columns = ['complex_name', 'protein_path', 'ligand_description', 'protein_sequence']
 
     path = os.path.join(file_dir, f"{project_name}_docking_query_{docking_method}.csv")
