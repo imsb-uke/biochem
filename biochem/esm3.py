@@ -78,9 +78,9 @@ def run_esm3(
     if len(protein_input['sasa']):
         protein.sasa = protein_input['sasa']
     if len(protein_input['function']):
-        protein.sasa = protein_input['function']
+        protein.function_annotations = protein_input['function']
     if len(protein_input['residue_annotations']):
-        protein.sasa = protein_input['residue_annotations']
+        protein.residue_annotations = protein_input['residue_annotations']
 
     # Build the model
     model = client(model=model_name, url="https://forge.evolutionaryscale.ai", token=token)

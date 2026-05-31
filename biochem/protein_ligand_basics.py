@@ -440,8 +440,8 @@ def smiles_pattern_search(patterns: list,
     pdbbind_dir = "../data/PDBbind.csv"
     df_smiles = pd.read_csv(pdbbind_dir)
 
-    # Convert to patterns to mol
-    if pattern_type.lower == 'smarts':
+    # Convert patterns to mol
+    if pattern_type.lower() == 'smarts':
         pattern_mols = [Chem.MolFromSmarts(p) for p in patterns]
     else:
         pattern_mols = [Chem.MolFromSmiles(p) for p in patterns]

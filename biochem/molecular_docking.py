@@ -131,8 +131,7 @@ def extract_native_ligand_from_pdb(
     except:
         ntv_smiles = None
 
-    ntv_smiles = ""
-    return {
+    ntv_smiles = ""     # for now, we will not use the smiles of the native ligand.
         "Message": "Done!",
         "SMILES": ntv_smiles,
         "save_dir_sdf": ntv_sdf,
