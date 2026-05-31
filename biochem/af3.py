@@ -10,10 +10,6 @@ from Bio.PDB import MMCIFParser, PDBIO
 from rdkit import Chem
 from rdkit.Chem import AllChem, Descriptors
 
-af3_path = "/project/alphafold3/"
-output_path = os.path.join(af3_path, "gpu_final_output")
-ccd_path = "files"
-FILES = "files"
 
 
 def to_base(number, base):
@@ -266,11 +262,17 @@ def run_af3(
     protein_sequence: list,
     n_chain_per_sequence: list|None = None,
     uniprot_id: list|None = None,
-    ligand_sdf_dir : str|None = None,
-    n_ligand : int = 1,
-    project_name: str = 'my_project'
+    ligand_sdf_dir: str|None = None,
+    n_ligand: int = 1,
+    project_name: str = 'my_project',
+    af3_path: str = None,
+    file_dir: str,
 ):
-    
+    af3_path = af3_path or os.getenv("AF3_PATH")
+    if not af3_path:
+        raise ValueError("AF3 path must be provided via 'af3_path' argument or AF3_PATH env var.")
+    output_path = os.path.join(af3_path, "gpu_final_output")
+
     seed_max = 1
     seed = 1
 
@@ -278,7 +280,7 @@ def run_af3(
         n_chain_per_sequence = [1] * len(protein_sequence)
     if uniprot_id is None:
         uniprot_id = ['None'] * len(protein_sequence)
-                
+
     protein_dict = {
     'protein_name' : [project_name],
     'uniprot_id'   : uniprot_id,
@@ -287,7 +289,7 @@ def run_af3(
     }
 
     if ligand_sdf_dir:
-        ligand_sdf_dir = os.path.join(ccd_path, ligand_sdf_dir)
+        ligand_sdf_dir = os.path.join(file_dir, ligand_sdf_dir)
         ligand_cif_dir = ligand_sdf_dir.rsplit(".", 1)[0] + ".cif"
         sdf_pdb_to_enriched_cif(ligand_sdf_dir, ligand_cif_dir)
         ligand_dict = {
@@ -298,21 +300,21 @@ def run_af3(
         }
     else:
         ligand_dict = {}
-        
-    make_af3_json(project_name, protein_dict, ligand_dict, af3_path, seed_max = seed_max, verbos=True)
+
+    make_af3_json(project_name, protein_dict, ligand_dict, af3_path, seed_max=seed_max, verbos=True)
 
     # Wait for AF3
     protein_cif_dir = os.path.join(output_path, f"{project_name}/seed-{seed}_sample-0/{project_name}_seed-{seed}_sample-0_model.cif")
-    while(not os.path.exists(protein_cif_dir)):
+    while not os.path.exists(protein_cif_dir):
         time.sleep(2)
     print('The result is ready at:')
     print(protein_cif_dir)
-    
+
     # Convert CIF to PDB
-    protein_pdb_dir = os.path.join(FILES, project_name + '.pdb')
+    protein_pdb_dir = os.path.join(file_dir, project_name + '.pdb')
     cif2pdb(protein_cif_dir, protein_pdb_dir)
 
     return {
-        'message' : f"The result is ready",
+        'message'     : "The result is ready",
         'output_file' : protein_pdb_dir
     }
