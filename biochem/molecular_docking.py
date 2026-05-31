@@ -362,6 +362,7 @@ def run_molecular_docking(query_table_dir: str,
     df = pd.read_csv(query_table_dir, dtype=str)
 
     start = time.time()
+    ligand_pose_pdb_dir = None  # claude: default if all compounds already docked (resume case)
     for i in range(len(df)):
         # claude ---
         if stop_event and stop_event.is_set():
