@@ -49,7 +49,6 @@ def run_esm3(
 
     """This function performs all ESM3 analysis, including protein folding, inverse folding, sequence completion, aminoacis annotation, etc."""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     token = ESM3_TOKEN
 
     protein_input_keys = ['pkl_file', 'pdb_file', 'sequence', 'sasa', 'function', 'residue_annotations']

@@ -42,7 +42,6 @@ def extract_native_ligand_from_pdb(name: str,
                                    input_file: str,
                                    file_dir: str = None,
                                   ):
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     Keyword = name
     true_id = Keyword[-3:] if len(Keyword) > 3 else Keyword
 
@@ -102,7 +101,6 @@ def protonate_protein(pdb_file: str,
                       file_dir: str = None,
                      ):
     """Protonate and optimize protein based on propka and pdb2pqr"""
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     # force_field = ['AMBER' ,'CHARMM' ,'PARSE', 'TYL06', 'PEOEPB', 'SWANSON']
 
     ph_str = str(ph).replace(".", "")             # 7.2 -> 72
@@ -136,7 +134,6 @@ def smiles_to_3d(ligand_smiles: str,
                 ):
     """Convert molecular SMILES notation to sdf and pdb files by ligand energy minimization. It automatically removes counter ions if any"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     ligand_sdf_dir = os.path.join(file_dir, ligand_name + '.sdf')
     ligand_pdb_dir = os.path.join(file_dir, ligand_name + '.pdb')
@@ -226,7 +223,6 @@ def protonate_and_optimize_ligand(input_file: str,
 
     """Add hydrogens to molecules based on a given ph and perfrom energy minimization using obabel"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # PDB2PQR/PropKa for ptotein
 
@@ -440,7 +436,6 @@ def smiles_pattern_search(patterns: list,
                          ):
     """Serach in PDBbind data for co-crystaizd ligands with a specific patterns given a list of SMILES or SMARTS"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     pdbbind_dir = "../data/PDBbind.csv"
     df_smiles = pd.read_csv(pdbbind_dir)
@@ -483,7 +478,6 @@ def smiles_pattern_search(patterns: list,
 def extract_pdb_components(protein_pdb_dir: str, file_dir: str = None):
     """Extract protein chains and native ligands in a pdb file and save in separate files"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # Extract protein chains
     protein_extracted = extract_proteins(protein_pdb_dir)
@@ -519,7 +513,6 @@ def protonate_and_optimize_protein(pdb_file: str,
                                    file_dir: str = None,
                                   ):
     """Protonate and optimize protein based on propka, pdb2pqr, and foldX (FoldX may take a long time)"""
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     if ph:
         out_ph = protonate_protein(pdb_file, ph, force_field, file_dir=file_dir)
         pdb_file = out_ph['saved_file']

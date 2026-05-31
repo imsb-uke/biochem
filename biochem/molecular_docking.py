@@ -27,7 +27,6 @@ def sdf2pdbqt(sdf_file: str,
              ):
     """Given a ligand sdf file, prepare the pdbqt file required for docking with VINA family"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
     pdbqt_file = os.path.join(file_dir, ligand_name + '.pdbqt')
     os.system(f"mk_prepare_ligand.py -i {sdf_file} -o {pdbqt_file} --rigid_macrocycles --bad_charge_ok") # ./
 
@@ -105,7 +104,6 @@ def extract_native_ligand_from_pdb(
     (Update: there is an option to keep the atom numbers from pdb. This is needed for complex generation.)
     """
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     os.makedirs(file_dir, exist_ok=True)
     ntv_sdf = os.path.join(file_dir, f"{name}.sdf")
@@ -157,7 +155,6 @@ def prepare_protein(pdb_file: str,
                    ):
     """Given a protein pdb file, prepare the protein query table. It performs protonation and energy minimization if specified. If method is a VINA family, it makes the binding box, removes water, adds partial charges and generates the pdbqt file."""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     pdbqt_file = os.path.join(file_dir, f"{project_name}_target.pdbqt")
     constraint_file = os.path.join(file_dir, f"{project_name}_constraint_file")
@@ -221,7 +218,6 @@ def prepare_ligand(smiles: str = None,
                   ):
     """Given a ligabd SMILES or sdf file, prepare the ligand query table. It performs protonation and energy minimization if specified. If method is a VINA family, adds partial charges and generates the pdbqt file."""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # at least either sdf_file or smiles should be given
 
@@ -312,7 +308,6 @@ def make_query_table(protein_df_file: str,
                     ):
     """Make query table for molecular docking given a single protein df file and single of multiple ligabds df files"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     df_protein = pd.read_csv(protein_df_file)
     df_ligand = pd.read_csv(ligand_df_file)
@@ -348,7 +343,6 @@ def run_molecular_docking(query_table_dir: str,
                          ):
     """Perfom molecular docking using VINA, SMINA, GNINA or DiffDock"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # Parameters for Vina based methods
     n_cpu = '20'
@@ -431,7 +425,6 @@ def get_protein_ligand_interaction(pdb_file: str,
 
     """Calculate protein-ligand interaction given pdb file of a protein and sdf file of a ligad. In addition, generate: complex pdb file, protein pocket, and protein-ligand graph"""
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # Define file names to be saved
     complex_pdb_file = os.path.join(file_dir, complex_name + '_complex.pdb')

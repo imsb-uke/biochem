@@ -461,7 +461,6 @@ def interaction_plot(nodes_csv_dir: str,
     # 2) Reindexes ligand/protein atoms into a compact, contiguous index space.
     # 5) Saves the plot as an HTML file.
 
-    file_dir = file_dir or os.getenv("FILE_DIR", "files")  # claude
 
     # -------------------------------------------------------------------------
     # 1) READ & REINDEX
