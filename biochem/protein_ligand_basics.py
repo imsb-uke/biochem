@@ -1,7 +1,4 @@
 import os
-foldX_rel_path = "../software/FoldX"
-foldX_abs_path = os.path.abspath(foldX_rel_path)
-os.environ["FOLDX_BINARY"] = foldX_abs_path
 
 from pyfoldx.structure import Structure
 
@@ -64,7 +61,11 @@ def extract_native_ligand_from_pdb(name: str,
     }
 
 
-def optimize_protein_foldx(pdb_file: str):
+def optimize_protein_foldx(pdb_file: str, foldx_binary: str = None):
+    foldx_binary = foldx_binary or os.getenv("FOLDX_BINARY")
+    if not foldx_binary:
+        raise ValueError("FoldX binary path must be provided via 'foldx_binary' argument or FOLDX_BINARY env var.")
+    os.environ["FOLDX_BINARY"] = foldx_binary
 
     st = Structure('my_protein', path=pdb_file)
 

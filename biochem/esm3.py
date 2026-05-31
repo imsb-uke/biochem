@@ -5,7 +5,6 @@ import pickle
 from esm.sdk import client
 from esm.sdk.api import ESMProtein, GenerationConfig, SamplingConfig
 
-ESM3_TOKEN = os.getenv("ESM3_TOKEN")
 
 # === utilities ===
 def plk2protein(file_path):
@@ -41,7 +40,7 @@ def seq2protein(sequence):
 def run_esm3(
     protein_input: dict,
     task = str,
-    # token = ESM3_TOKEN,
+    token: str = None,
     protein_name = 'my_protein',
     model_name = 'esm3-large-2024-03',
     file_dir: str = None
@@ -49,7 +48,7 @@ def run_esm3(
 
     """This function performs all ESM3 analysis, including protein folding, inverse folding, sequence completion, aminoacis annotation, etc."""
 
-    token = ESM3_TOKEN
+    token = token or os.getenv("ESM3_TOKEN")
 
     protein_input_keys = ['pkl_file', 'pdb_file', 'sequence', 'sasa', 'function', 'residue_annotations']
     for i in protein_input_keys:
