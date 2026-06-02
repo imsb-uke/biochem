@@ -438,7 +438,7 @@ def smiles_pattern_search(patterns: list,
     """Serach in PDBbind data for co-crystaizd ligands with a specific patterns given a list of SMILES or SMARTS"""
 
 
-    pdbbind_dir = "../data/PDBbind.csv"
+    pdbbind_dir = "../data/PDBbind.csv"      # hardcoded for now, can be an input in the future
     df_smiles = pd.read_csv(pdbbind_dir)
 
     # Convert patterns to mol
