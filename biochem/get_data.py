@@ -19,7 +19,7 @@ def uniprot2seq(uniprot_id: str) -> str:
         return f'Error in uniprot id {uniprot_id}'
 
 
-def get_pdb(pdb_id: str, file_dir: str = None) -> dict:
+def get_pdb(pdb_id: str, file_dir: str) -> dict:
     """Download the pdb file the protein given the pdb id"""
     url = f"https://files.rcsb.org/download/{pdb_id}.pdb"
     response = requests.get(url)
@@ -44,13 +44,13 @@ def read_csv(csv_file: str) -> str:
     df = pd.read_csv(csv_file)
     return df.to_csv(index=False)
 
-def write_text_file(txt: str, file_name: str, file_dir: str = None) -> None:
+def write_text_file(txt: str, file_name: str, file_dir: str) -> None:
     """Write plain text file; file_name should include the extension.*"""
     file_name = os.path.join(file_dir, file_name)
     with open(file_name, "w", encoding="utf-8") as f:
         f.write(txt)
 
-def read_text_file(file_name: str, file_dir: str = None) -> str:
+def read_text_file(file_name: str, file_dir: str) -> str:
     """Read plain text file; file_name should include the extension.*"""
     file_name = os.path.join(file_dir, file_name)
     with open(file_name, "r", encoding="utf-8") as f:

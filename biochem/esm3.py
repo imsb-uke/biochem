@@ -39,11 +39,11 @@ def seq2protein(sequence):
 
 def run_esm3(
     protein_input: dict,
+    file_dir: str,
     task = str,
     token: str = None,
     protein_name = 'my_protein',
     model_name = 'esm3-large-2024-03',
-    file_dir: str = None
     ) -> dict:
 
     """This function performs all ESM3 analysis, including protein folding, inverse folding, sequence completion, aminoacis annotation, etc."""

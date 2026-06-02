@@ -174,6 +174,7 @@ def _add_wire_box(viewer, center, size, color="#ff0000", opacity=0.6):
 
 def render_structures(
     files: List[str],
+    file_dir: str,
     style_rules: Optional[List[Dict[str, Union[Sel, Sty]]]] = None,
     surface_rules: Optional[List[Dict[str, Any]]] = None,
     label_rules: Optional[List[Dict[str, Any]]] = None,
@@ -189,7 +190,6 @@ def render_structures(
     height: int = 800,
     zoom: bool = True,
     file_name: str = 'my_protein',
-    file_dir: str = None,
 ) -> dict:
     """Render multiple molecular files with fine-grained control. Read the help doc get_tools_doc('render_structures')"""
 

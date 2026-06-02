@@ -260,13 +260,13 @@ def make_af3_json(project_name,
 
 def run_af3(
     protein_sequence: list,
+    file_dir: str,
     n_chain_per_sequence: list|None = None,
     uniprot_id: list|None = None,
     ligand_sdf_dir: str|None = None,
     n_ligand: int = 1,
     project_name: str = 'my_project',
     af3_path: str = None,
-    file_dir: str,
 ):
     af3_path = af3_path or os.getenv("AF3_PATH")
     if not af3_path:

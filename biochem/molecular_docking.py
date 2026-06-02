@@ -23,7 +23,7 @@ def binding_box(pdb_file, constraint_file, scale: float = 1.1):
 
 def sdf2pdbqt(sdf_file: str,
               ligand_name: str,   # Later this should by defult be the same name as sdf
-              file_dir: str = None,
+              file_dir: str = "./",
              ):
     """Given a ligand sdf file, prepare the pdbqt file required for docking with VINA family"""
 
@@ -95,8 +95,8 @@ def make_protein_ligand_complex(
 def extract_native_ligand_from_pdb(
     name: str,
     input_file: str,
+    file_dir: str,
     retain_atom_numbers : bool = False,
-    file_dir: str = None,
 ):
 
     """
@@ -132,6 +132,7 @@ def extract_native_ligand_from_pdb(
         ntv_smiles = None
 
     ntv_smiles = ""     # for now, we will not use the smiles of the native ligand.
+    return {
         "Message": "Done!",
         "SMILES": ntv_smiles,
         "save_dir_sdf": ntv_sdf,
@@ -141,6 +142,7 @@ def extract_native_ligand_from_pdb(
 ## ============== Main functions ======================
 
 def prepare_protein(pdb_file: str,
+                    file_dir: str,
                     protein_name: str = 'my_protein',
                     partial_charge: str = 'gasteiger',
                     project_name: str = 'my_docking',
@@ -150,7 +152,6 @@ def prepare_protein(pdb_file: str,
                     ph: float|None = None,
                     force_field: str = 'AMBER',
                     foldx_repair: bool = False,
-                    file_dir: str = None,
                    ):
     """Given a protein pdb file, prepare the protein query table. It performs protonation and energy minimization if specified. If method is a VINA family, it makes the binding box, removes water, adds partial charges and generates the pdbqt file."""
 
@@ -204,7 +205,8 @@ def prepare_protein(pdb_file: str,
     }
 
 
-def prepare_ligand(smiles: str = None,
+def prepare_ligand(file_dir: str,
+                   smiles: str = None,
                    sdf_file: str = None,
                    ligand_name: str = 'my_ligand',
                    project_name: str = 'my_docking',
@@ -213,7 +215,6 @@ def prepare_ligand(smiles: str = None,
                    force_field: str = 'MMFF94',
                    convergence_criteria: str = '0.00001',
                    maximum_steps: int = 10000,
-                   file_dir: str = None,
                   ):
     """Given a ligabd SMILES or sdf file, prepare the ligand query table. It performs protonation and energy minimization if specified. If method is a VINA family, adds partial charges and generates the pdbqt file."""
 
@@ -303,7 +304,7 @@ def make_query_table(protein_df_file: str,
                      ligand_df_file: str,
                      project_name: str = 'my_docking',
                      docking_method: str = 'smina',
-                     file_dir: str = None,
+                     file_dir: str = "./",
                     ):
     """Make query table for molecular docking given a single protein df file and single of multiple ligabds df files"""
 
@@ -338,7 +339,7 @@ def run_molecular_docking(query_table_dir: str,
                           use_docker: bool = False,  # claude
                           software_dir: str = None,  # claude
                           stop_event = None,          # claude: threading.Event; set to cancel between compounds
-                          file_dir: str = None,
+                          file_dir: str = "./",
                          ):
     """Perfom molecular docking using VINA, SMINA, GNINA or DiffDock"""
 
@@ -417,9 +418,9 @@ def run_molecular_docking(query_table_dir: str,
 
 def get_protein_ligand_interaction(pdb_file: str,
                                    sdf_file: str,
+                                   file_dir: str,
                                    complex_name: str = 'my_complex',
                                    pocket_threshold: float|int = 6,      # in Ångström
-                                   file_dir: str = None,
                                   ):
 
     """Calculate protein-ligand interaction given pdb file of a protein and sdf file of a ligad. In addition, generate: complex pdb file, protein pocket, and protein-ligand graph"""

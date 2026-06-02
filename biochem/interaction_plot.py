@@ -436,9 +436,9 @@ def _ask_optional_color(prompt):
 
 def interaction_plot(nodes_csv_dir: str,
                      edges_csv_dir: str,
+                     file_dir: str,
                      style: dict|None = None,
                      file_name: str = 'interaction_plot',
-                     file_dir: str,
                     ) -> dict:
     """Visuzalize Protein-ligand interactions given complex results from `get_protein_ligand_interaction` tool"""
     # 1) Reads raw node/edge CSVs for a complex.

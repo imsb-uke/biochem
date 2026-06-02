@@ -37,7 +37,7 @@ def remove_counterions(smiles):
 
 def extract_native_ligand_from_pdb(name: str,
                                    input_file: str,
-                                   file_dir: str = None,
+                                   file_dir: str,
                                   ):
     Keyword = name
     true_id = Keyword[-3:] if len(Keyword) > 3 else Keyword
@@ -99,7 +99,7 @@ def optimize_protein_foldx(pdb_file: str, foldx_binary: str = None):
 def protonate_protein(pdb_file: str,
                       ph: float = 7.2,
                       force_field: str = 'amber',
-                      file_dir: str = None,
+                      file_dir: str = "./",
                      ):
     """Protonate and optimize protein based on propka and pdb2pqr"""
     # force_field = ['AMBER' ,'CHARMM' ,'PARSE', 'TYL06', 'PEOEPB', 'SWANSON']
@@ -125,13 +125,13 @@ def protonate_protein(pdb_file: str,
 
 # 1. Ligand analysis =====================
 def smiles_to_3d(ligand_smiles: str,
+                 file_dir: str,
                  ligand_name: str = 'my_ligand',
                  method: str = 'obabel',
                  force_field: str = 'MMFF94',
                  convergence_criteria: str = '0.00001',
                  maximum_steps: int = 10000,
                  verbos: bool = True,
-                 file_dir: str = None,
                 ):
     """Convert molecular SMILES notation to sdf and pdb files by ligand energy minimization. It automatically removes counter ions if any"""
 
@@ -219,7 +219,7 @@ def protonate_and_optimize_ligand(input_file: str,
                                   force_field: str = 'MMFF94',
                                   convergence_criteria: str = '0.00001',
                                   maximum_steps: int = 10000,
-                                  file_dir: str = None,
+                                  file_dir: str = "./",
                                  ):
 
     """Add hydrogens to molecules based on a given ph and perfrom energy minimization using obabel"""
@@ -431,9 +431,9 @@ def admet_predict(smiles: str) -> dict:
 
 
 def smiles_pattern_search(patterns: list,
+                          file_dir: str,
                           pattern_type: str = 'smiles',
                           search_name: str = 'my_search',
-                          file_dir: str = None,
                          ):
     """Serach in PDBbind data for co-crystaizd ligands with a specific patterns given a list of SMILES or SMARTS"""
 
@@ -476,7 +476,7 @@ def smiles_pattern_search(patterns: list,
 
 # 2. Protein analysis =====================
 
-def extract_pdb_components(protein_pdb_dir: str, file_dir: str = None):
+def extract_pdb_components(protein_pdb_dir: str, file_dir: str):
     """Extract protein chains and native ligands in a pdb file and save in separate files"""
 
 
@@ -511,7 +511,7 @@ def protonate_and_optimize_protein(pdb_file: str,
                                    ph: float|None = 7.2,
                                    force_field: str = 'amber',
                                    foldx_repair: bool = False,
-                                   file_dir: str = None,
+                                   file_dir: str = "./",
                                   ):
     """Protonate and optimize protein based on propka, pdb2pqr, and foldX (FoldX may take a long time)"""
     if ph:
