@@ -4,9 +4,19 @@ import py3Dmol
 import pandas as pd
 import numpy as np
 from typing import List, Dict, Any, Optional, Tuple, Union
+from typing_extensions import TypedDict
 
 Sel = Dict[str, Any]   # a 3Dmol selection dict, e.g. {"model":0,"chain":"A","resi":[10,11], "elem":"C","hetflag":True}
 Sty = Dict[str, Any]   # a 3Dmol style dict,   e.g. {"cartoon":{"color":"#ff0","opacity":0.6}} or {"stick":{"radius":0.25}}
+
+class StyleRule(TypedDict, total=False):
+    select: Sel
+    style:  Sty
+
+class SurfaceRule(TypedDict, total=False):
+    select:  Sel
+    surface: Dict[str, Any]
+    type:    str
 
 def _infer_format(path: str) -> str:
     ext = pathlib.Path(path).suffix.lower().lstrip(".")
@@ -175,8 +185,8 @@ def _add_wire_box(viewer, center, size, color="#ff0000", opacity=0.6):
 def render_structures(
     files: List[str],
     file_dir: str,
-    style_rules: Optional[List[Dict[str, Union[Sel, Sty]]]] = None,
-    surface_rules: Optional[List[Dict[str, Any]]] = None,
+    style_rules:   Optional[List[StyleRule]]   = None,
+    surface_rules: Optional[List[SurfaceRule]] = None,
     label_rules: Optional[List[Dict[str, Any]]] = None,
     chain_color_map: Optional[Dict[Union[int,str], Dict[str,str]]] = None,
     interaction_tables: Optional[List[Optional[str]]] = None,
@@ -192,6 +202,9 @@ def render_structures(
     file_name: str = 'my_protein',
 ) -> dict:
     """Render multiple molecular files with fine-grained control. Read the help doc get_tools_doc('render_structures')"""
+    # Safety net: filter out empty rules that an LLM may emit when schema is loose
+    style_rules   = [r for r in (style_rules   or []) if r.get("select") or r.get("style")]   or None
+    surface_rules = [r for r in (surface_rules or []) if r.get("select") or r.get("surface")] or None
 
     # Build viewer
     viewer = py3Dmol.view(width=width, height=height)
