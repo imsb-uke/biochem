@@ -44,6 +44,34 @@ def read_csv(csv_file: str) -> str:
     df = pd.read_csv(csv_file)
     return df.to_csv(index=False)
 
+
+def read_head(file_path: str, n: int = 20) -> str:
+    """Read the first n lines of any file"""
+    with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
+        lines = []
+        for i, line in enumerate(f):
+            if i >= n:
+                break
+            lines.append(line)
+    return ''.join(lines)
+
+
+def read_tail(file_path: str, n: int = 20) -> str:
+    """Read the last n lines of any file"""
+    with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
+        lines = f.readlines()
+    return ''.join(lines[-n:])
+
+
+def list_dir(directory: str) -> str:
+    """List files and folders in a directory so the agent can verify their existence"""
+    entries = os.listdir(directory)
+    dirs  = sorted(e for e in entries if os.path.isdir(os.path.join(directory, e)))
+    files = sorted(e for e in entries if os.path.isfile(os.path.join(directory, e)))
+    lines = [f'[dir]  {d}' for d in dirs] + [f'[file] {f}' for f in files]
+    return '\n'.join(lines) if lines else '(empty)'
+
+
 def write_text_file(txt: str, file_name: str, file_dir: str) -> None:
     """Write plain text file; file_name should include the extension.*"""
     file_name = os.path.join(file_dir, file_name)

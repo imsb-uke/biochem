@@ -1,4 +1,4 @@
-from .get_data import uniprot2seq, get_pdb, read_csv, write_text_file
+from .get_data import uniprot2seq, get_pdb, read_csv, read_head, read_tail, list_dir, write_text_file
 from .resources import drug_discovery_protocol, collaborative_people, get_tools_doc
 from .protein_ligand_basics import smiles_to_3d, calculate_ligand_info, smiles_pattern_search, extract_pdb_components, obabel, extract_pdb_info, protonate_and_optimize_ligand, protonate_and_optimize_protein, cxsmiles2smiles, stereoisomers, admet_predict
 from .esm3 import run_esm3
@@ -10,7 +10,7 @@ from .interaction_plot import interaction_plot
 # from .douments import *
 
 TOOLS = [
-    uniprot2seq, get_pdb, read_csv, write_text_file,
+    uniprot2seq, get_pdb, read_csv, read_head, read_tail, list_dir, write_text_file,
     drug_discovery_protocol, collaborative_people, get_tools_doc,
     smiles_to_3d, calculate_ligand_info, smiles_pattern_search, extract_pdb_components, obabel, extract_pdb_info, protonate_and_optimize_ligand, protonate_and_optimize_protein, cxsmiles2smiles, stereoisomers, admet_predict,
     run_esm3, run_af3,
