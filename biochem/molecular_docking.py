@@ -376,19 +376,18 @@ def run_molecular_docking(query_table_dir: str,
 
             if not redock and os.path.exists(dock_pdbqt_dir):
                 print(f"file {dock_pdbqt_dir} already exists")
-                continue
+            else:
+                query_dict = {
+                    'protein_pdbqt_dir' : df['protein_pdbqt_file'][i],
+                    'ligand_pdbqt_dir' : df['ligand_pdbqt_file'][i],
+                    'constraint_file_dir' : df['constraint_file'][i],
+                    'output_pdbqt_dir' : dock_pdbqt_dir,
+                }
 
-            query_dict = {
-                'protein_pdbqt_dir' : df['protein_pdbqt_file'][i],
-                'ligand_pdbqt_dir' : df['ligand_pdbqt_file'][i],
-                'constraint_file_dir' : df['constraint_file'][i],
-                'output_pdbqt_dir' : dock_pdbqt_dir,
-            }
+                run_docking(query_dict, use_docker=use_docker, software_dir=software_dir, method=docking_method, n_cpu=n_cpu, exh=exhaustiveness)  # claude
+                # !echo {i} >> output.log
 
-            run_docking(query_dict, use_docker=use_docker, software_dir=software_dir, method=docking_method, n_cpu=n_cpu, exh=exhaustiveness)  # claude
-            # !echo {i} >> output.log
-
-            # Extract pose sdf files
+            # Extract pose sdf files — always run so re-used pdbqts also get split
             ligand_pose_pdb_dir = os.path.join(result_dir, f'{docking_method}_{protein_name}_{ligand_name}_pose_.sdf')
             os.system(f'obabel {dock_pdbqt_dir} -O {ligand_pose_pdb_dir} -m > /dev/null 2>&1')
 
