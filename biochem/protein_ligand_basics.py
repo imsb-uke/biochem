@@ -564,21 +564,23 @@ def extract_pdb_info(path):
 
     # --- count atoms, chains, HETATMs --------------------------------------
     total_atoms = 0
-    chain_names = []
-    het_by_chain = {}
+    chain_info  = {}
     if model:
         for ch in model:
-            chain_names.append(ch.name)
+            polymer_res = [r for r in ch if r.het_flag != "H" and not r.is_water()]
             ligs = defaultdict(int)
             for res in ch:
                 total_atoms += len(res)
-                # if res.is_water():
-                #     continue
-                # if getattr(res, "het_flag", " ") != " ":    # get ATOM and HETATM
-                if getattr(res, "het_flag", "\x00") == "H":   # get only HETATM
+                if getattr(res, "het_flag", "\x00") == "H":
                     ligs[res.name] += 1
-            het_by_chain[ch.name] = dict(sorted(ligs.items()))
-    chain_names = sorted(set(chain_names))
+            entry = {"hetatm": dict(sorted(ligs.items()))}
+            if polymer_res:
+                seq_ids        = [r.seqid.num for r in polymer_res]
+                entry["start"]  = min(seq_ids)
+                entry["end"]    = max(seq_ids)
+                entry["length"] = len(polymer_res)
+            chain_info[ch.name] = entry
+    chain_names = sorted(chain_info.keys())
 
     # --- fallback cell/space group from coordinates ------------------------
     sg_fallback = getattr(st.spacegroup, "hm", None) if getattr(st, "spacegroup", None) else None
@@ -696,6 +698,13 @@ def extract_pdb_info(path):
                 "Polymer molecular weight (kDa, approx.)": polymer_mw_kda
             }
         },
-        "Chains": chain_names,
-        "HETATM per chain": het_by_chain
+        "Chains": {
+            name: {
+                "start" : chain_info[name].get("start"),
+                "end"   : chain_info[name].get("end"),
+                "length": chain_info[name].get("length"),
+            }
+            for name in chain_names
+        },
+        "HETATM per chain": {name: chain_info[name]["hetatm"] for name in chain_names}
     }
