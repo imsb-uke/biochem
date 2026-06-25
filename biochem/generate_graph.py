@@ -1,5 +1,3 @@
-import os
-import json
 import pandas as pd
 from rdkit import Chem
 from Bio.Data import IUPACData

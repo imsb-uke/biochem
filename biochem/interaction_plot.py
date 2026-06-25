@@ -580,12 +580,17 @@ def interaction_plot(nodes_csv_dir: str,
         ))
 
     if style['show_atom_labels']:
+        labels = [
+            f"{row['symbol']}{int(row['res_num'])}" if str(row.get('molecule', '')).lower() == 'protein' and pd.notna(row.get('res_num'))
+            else str(row['symbol'])
+            for _, row in df_nodes.iterrows()
+        ]
         fig.add_trace(go.Scatter3d(
             x=df_nodes["x"],
             y=df_nodes["y"],
             z=df_nodes["z"],
             mode="text",
-            text=df_nodes["symbol"].astype(str),
+            text=labels,
             textposition="top center",
             showlegend=False,
         ))
