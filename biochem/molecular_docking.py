@@ -415,29 +415,38 @@ def run_molecular_docking(query_table_dir: str,
     }
 
 
-def get_protein_ligand_interaction(pdb_file: str,
-                                   sdf_file: str,
-                                   file_dir: str,
+def get_protein_ligand_interaction(protein_pdb_file: str = None,
+                                   ligand_sdf_file: str = None,
+                                   complex_pdb_file: str = None,
+                                   file_dir: str = None,
                                    complex_name: str = 'my_complex',
                                    pocket_threshold: float|int = 6,      # in Ångström
                                   ):
 
     """Calculate protein-ligand interaction given pdb file of a protein and sdf file of a ligad. In addition, generate: complex pdb file, protein pocket, and protein-ligand graph"""
 
+    # If a protein-ligand complex pdb is given instead, extract its components first
+    if complex_pdb_file:
+        components = extract_pdb_components(complex_pdb_file, file_dir)
+        protein_pdb_file = components['proteins']['whole']
+        ligand_name, ligand_info = next(iter(components['ligands'].items()))
+        ligand_pdb = ligand_info['path'][0]
+        ligand_sdf_file = os.path.join(file_dir, f"{ligand_name}.sdf")
+        obabel(f"-ipdb {ligand_pdb} -osdf -O {ligand_sdf_file}")
 
     # Define file names to be saved
-    complex_pdb_file = os.path.join(file_dir, complex_name + '_complex.pdb')
+    complex_pdb_file_out = os.path.join(file_dir, complex_name + '_complex.pdb')
     protein_pocket_file = os.path.join(file_dir, complex_name + '_protein_pocket.csv')
     interaction_table_file = os.path.join(file_dir, complex_name + '_interaction_table.csv')
     node_tabe_file = os.path.join(file_dir, complex_name + '_node_list.csv')
     edge_list_file = os.path.join(file_dir, complex_name + '_edge_list.csv')
 
     # Make complex pdb file
-    make_protein_ligand_complex(pdb_file, sdf_file, complex_pdb_file)
+    make_protein_ligand_complex(protein_pdb_file, ligand_sdf_file, complex_pdb_file_out)
 
     # Extract ligand from pdb
     tmp = extract_native_ligand_from_pdb(name = 'LIG',
-                                         input_file = complex_pdb_file,
+                                         input_file = complex_pdb_file_out,
                                          retain_atom_numbers=True,
                                          file_dir=file_dir)
     lig_pdb_file = tmp['save_dir_pdb']
@@ -451,7 +460,7 @@ def get_protein_ligand_interaction(pdb_file: str,
     df_ligand_edge = ligand_bonds(lig_sdf_file)
 
     # Get protein pocket
-    df_pocket = protein_pocket(complex_pdb_file, ligand_id = 'LIG', threshold = pocket_threshold)
+    df_pocket = protein_pocket(complex_pdb_file_out, ligand_id = 'LIG', threshold = pocket_threshold)
     df_pocket['index_in_pocket'] = df_pocket.index + 1
     prot_res_map = {i : j for i, j in zip(df_pocket['index'], df_pocket['index_in_pocket'])}
 
@@ -461,7 +470,7 @@ def get_protein_ligand_interaction(pdb_file: str,
     df_protein_edge['idx2_in_pocket'] = df_protein_edge['idx2'].map(prot_res_map)
 
     # Get protein-ligand interactions
-    df_lig_prot = protein_ligand_interaction(complex_pdb_file, ligand_id=['LIG'])
+    df_lig_prot = protein_ligand_interaction(complex_pdb_file_out, ligand_id=['LIG'])
 
     # In df_lig_prot, map pdb indices to new indices starting from 1
     if len(df_lig_prot):
@@ -538,7 +547,7 @@ def get_protein_ligand_interaction(pdb_file: str,
 
     return {
         'Message' : 'Done!',
-        'complex_pdb_file' : complex_pdb_file,
+        'complex_pdb_file' : complex_pdb_file_out,
         'interaction_table_file' : interaction_table_file,
         'protein_pocket_file' : protein_pocket_file,
         'node_tabe_file' : node_tabe_file,
