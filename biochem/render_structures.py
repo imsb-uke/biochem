@@ -18,6 +18,23 @@ class SurfaceRule(TypedDict, total=False):
     surface: Dict[str, Any]
     type:    str
 
+def _expand_resi_ranges(sel: Sel) -> Sel:
+    """Expand [start, end] range pairs inside a resi list into individual residue numbers.
+    e.g. "resi": [10, [50, 60], 120] -> [10, 50, 51, ..., 60, 120]
+    """
+    resi = sel.get("resi")
+    if isinstance(resi, list):
+        expanded = []
+        for item in resi:
+            if isinstance(item, (list, tuple)) and len(item) == 2:
+                lo, hi = sorted(item)
+                expanded.extend(range(lo, hi + 1))
+            else:
+                expanded.append(item)
+        sel = dict(sel)
+        sel["resi"] = sorted(set(expanded))
+    return sel
+
 def _infer_format(path: str) -> str:
     ext = pathlib.Path(path).suffix.lower().lstrip(".")
     return {"pdb":"pdb","cif":"cif","mmcif":"cif","mol2":"mol2","sdf":"sdf"}.get(ext, "pdb")
@@ -261,7 +278,7 @@ def render_structures(
     # Apply explicit style rules (in order; later rules can override earlier)
     if style_rules:
         for rule in style_rules:
-            sel = dict(rule.get("select", {}))
+            sel = _expand_resi_ranges(dict(rule.get("select", {})))
             sty = dict(rule.get("style", {}))
             # Expand model lists -> apply once per model for clarity
             models = sel.get("model", None)
@@ -275,7 +292,7 @@ def render_structures(
     # Surfaces
     if surface_rules:
         for rule in surface_rules:
-            sel = dict(rule.get("select", {}))
+            sel = _expand_resi_ranges(dict(rule.get("select", {})))
             srf = dict(rule.get("surface", {}))
             stype = rule.get("type", py3Dmol.VDW)
             viewer.addSurface(stype, srf, sel)
@@ -289,7 +306,7 @@ def render_structures(
                 viewer.addLabel(text, {"position": pos, **rule.get("style", {})})
             elif "select" in rule:
                 # Label center of selection's bounding box
-                viewer.addLabel(text, {"backgroundOpacity": 0.0, **rule.get("style", {})}, rule["select"])
+                viewer.addLabel(text, {"backgroundOpacity": 0.0, **rule.get("style", {})}, _expand_resi_ranges(rule["select"]))
             else:
                 viewer.addLabel(text, rule.get("style", {}))
 
