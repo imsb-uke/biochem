@@ -423,7 +423,10 @@ def get_protein_ligand_interaction(protein_pdb_file: str = None,
                                    pocket_threshold: float|int = 6,      # in Ångström
                                   ):
 
-    """Calculate protein-ligand interaction given pdb file of a protein and sdf file of a ligad. In addition, generate: complex pdb file, protein pocket, and protein-ligand graph"""
+    """Calculate protein-ligand interaction. Generates: complex pdb file, protein pocket, and protein-ligand graph.
+
+    Either provide protein_pdb_file and ligand_sdf_file directly, or provide complex_pdb_file
+    (a protein-ligand complex pdb) and the protein/ligand will be extracted and converted internally."""
 
     # If a protein-ligand complex pdb is given instead, extract its components first
     if complex_pdb_file:
