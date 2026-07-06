@@ -6,6 +6,7 @@ from .af3 import run_af3
 from .molecular_docking import prepare_protein, prepare_ligand, make_query_table, run_molecular_docking, get_protein_ligand_interaction
 from .render_structures import render_structures
 from .interaction_plot import interaction_plot
+from .fragment import get_functional_groups, annotate_functional_groups
 # from .prompts import *
 # from .douments import *
 
@@ -16,7 +17,8 @@ TOOLS = [
     run_esm3, run_af3,
     prepare_protein, prepare_ligand, make_query_table, run_molecular_docking, get_protein_ligand_interaction,
     render_structures,
-    interaction_plot
+    interaction_plot,
+    get_functional_groups, annotate_functional_groups
 ]
 RESOURCES = []
 PROMPTS = []
