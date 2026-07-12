@@ -489,7 +489,7 @@ def get_protein_ligand_interaction(protein_pdb_file: str = None,
         df_lig_prot['lig_atm_index'] = lig_atm_index
 
         # Cobmine node features
-    df_nodes = pd.DataFrame(columns=['index', 'molecule', 'symbol', 'x', 'y', 'z', 'res_num'])
+    df_nodes = pd.DataFrame(columns=['index', 'molecule', 'symbol', 'x', 'y', 'z', 'res_num', 'chain'])
 
     for _, row in df_lignd_atom.iterrows():
         df_nodes.loc[len(df_nodes)] = [
@@ -499,6 +499,7 @@ def get_protein_ligand_interaction(protein_pdb_file: str = None,
             row['x'],
             row['y'],
             row['z'],
+            None,
             None,
         ]
 
@@ -511,6 +512,7 @@ def get_protein_ligand_interaction(protein_pdb_file: str = None,
             row['y'],
             row['z'],
             row['index'],
+            row['chain'],
         ]
 
 

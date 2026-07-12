@@ -440,7 +440,33 @@ def interaction_plot(nodes_csv_dir: str,
                      style: dict|None = None,
                      file_name: str = 'interaction_plot',
                     ) -> dict:
-    """Visuzalize Protein-ligand interactions given complex results from `get_protein_ligand_interaction` tool"""
+    """Visuzalize Protein-ligand interactions given complex results from `get_protein_ligand_interaction` tool.
+
+    `style` (dict, optional): visual options. Any subset of keys may be given; keys you
+    omit fall back to the defaults below. If `style` is None (default), all options use
+    their defaults.
+
+        style_default = {
+            'show_legend' : True,
+            'show_atom_labels' : True,
+            'show_residue_chain' : False,   # prefix protein labels with chain, e.g. "A:GLU300"
+            'background_color' : "white",
+            'aromatic_ring_color' : "#d3d3d3",
+            'aromatic_ring_opacity' : 0.30,
+            'atom_color' : DEFAULT_ATOM_COLORS,       # per-element color map for ligand atoms
+            'atom_global_color' : None,               # if set, overrides all atom colors
+            'ligand_ligand_bond_color' : "#555555",
+            'peptide_bond_color' : "#cccccc",
+            'proten_ligand_bond_color' : "#0066ff",
+            'edge_feature_color' : DEFAULT_EDGE_FEATURE_COLORS,  # per-interaction-type color map
+            'bond_global_color' : None,               # if set, overrides all bond colors
+            'atom_radius' : 0.25,
+            'bond_radius' : 0.10,
+        }
+
+    Example (only overriding what's needed; all other keys keep their defaults):
+        style = {"show_residue_chain": True}
+    """
     # 1) Reads raw node/edge CSVs for a complex.
     # 2) Reindexes ligand/protein atoms into a compact, contiguous index space.
     # 5) Saves the plot as an HTML file.
@@ -460,32 +486,36 @@ def interaction_plot(nodes_csv_dir: str,
     # -------------------------------------------------------------------------
     # 2) ASK USER FOR VISUAL OPTIONS (with validation)
     # -------------------------------------------------------------------------
-    if style is None:
-        style = {
-            # Basic
-            'show_legend' : True,
-            'show_atom_labels' : True,
-            'background_color' : "white", #"#f5f5f5",
-            # Aromatic rings
-            'aromatic_ring_color' : "#d3d3d3",
-            'aromatic_ring_opacity' : 0.30,
-            # Atoms
-            'atom_color' : DEFAULT_ATOM_COLORS,
-            'atom_global_color' : None,
-            # Bonds
-            'ligand_ligand_bond_color' : "#555555",
-            'peptide_bond_color' : "#cccccc",
-            'proten_ligand_bond_color' : "#0066ff",
-            'edge_feature_color' : DEFAULT_EDGE_FEATURE_COLORS,
-            'bond_global_color' : None,
-            # Radii
-            'atom_radius' : 0.25,
-            'bond_radius' : 0.10,
-            
-            
-        }
+    style_default = {
+        # Basic
+        'show_legend' : True,
+        'show_atom_labels' : True,
+        'show_residue_chain' : False,
+        'background_color' : "white", #"#f5f5f5",
+        # Aromatic rings
+        'aromatic_ring_color' : "#d3d3d3",
+        'aromatic_ring_opacity' : 0.30,
+        # Atoms
+        'atom_color' : DEFAULT_ATOM_COLORS,
+        'atom_global_color' : None,
+        # Bonds
+        'ligand_ligand_bond_color' : "#555555",
+        'peptide_bond_color' : "#cccccc",
+        'proten_ligand_bond_color' : "#0066ff",
+        'edge_feature_color' : DEFAULT_EDGE_FEATURE_COLORS,
+        'bond_global_color' : None,
+        # Radii
+        'atom_radius' : 0.25,
+        'bond_radius' : 0.10,
+    }
 
-    
+    style_tmp = style_default.copy()
+    if style:
+        for key, val in style.items():
+            style_tmp[key] = val
+    style = style_tmp
+
+
     file_name = os.path.join(file_dir, file_name + '.html')
     
     # -------------------------------------------------------------------------
@@ -580,8 +610,15 @@ def interaction_plot(nodes_csv_dir: str,
         ))
 
     if style['show_atom_labels']:
+        def _protein_label(row):
+            label = f"{row['symbol']}{int(row['res_num'])}"
+            chain = row.get('chain')
+            if style.get('show_residue_chain', False) and pd.notna(chain):
+                label = f"{chain}:{label}"
+            return label
+
         labels = [
-            f"{row['symbol']}{int(row['res_num'])}" if str(row.get('molecule', '')).lower() == 'protein' and pd.notna(row.get('res_num'))
+            _protein_label(row) if str(row.get('molecule', '')).lower() == 'protein' and pd.notna(row.get('res_num'))
             else str(row['symbol'])
             for _, row in df_nodes.iterrows()
         ]
