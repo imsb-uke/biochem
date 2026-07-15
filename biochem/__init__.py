@@ -7,6 +7,7 @@ from .molecular_docking import prepare_protein, prepare_ligand, make_query_table
 from .render_structures import render_structures
 from .interaction_plot import interaction_plot
 from .fragment import get_functional_groups, annotate_functional_groups
+from .pharmacophore_compare import screen_library_pharmacophore
 # from .prompts import *
 # from .douments import *
 
@@ -18,7 +19,8 @@ TOOLS = [
     prepare_protein, prepare_ligand, make_query_table, run_molecular_docking, get_protein_ligand_interaction,
     render_structures,
     interaction_plot,
-    get_functional_groups, annotate_functional_groups
+    get_functional_groups, annotate_functional_groups,
+    screen_library_pharmacophore
 ]
 RESOURCES = []
 PROMPTS = []

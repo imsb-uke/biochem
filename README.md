@@ -17,6 +17,7 @@ pip install -e .
 - `run_af3` / `run_esm3` — AlphaFold3 and ESM3 structure prediction.
 - `molecular_docking` tools — protein/ligand preparation, VINA/SMINA/GNINA/DiffDock docking.
 - `protein_ligand_basics` — SMILES→3D, protonation, PDB extraction, ADMET prediction.
+- `screen_library_pharmacophore` — CDPKit/CDPL pharmacophore-alignment screening of a candidate ligand library against one known-active query molecule, ranked by fit score.
 
 ## Notes
 

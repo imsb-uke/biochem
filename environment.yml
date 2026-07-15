@@ -36,4 +36,4 @@ dependencies:
       - esm
       - admet-ai
       - pyfoldx
-      # - cdpkit
+      - CDPKit
