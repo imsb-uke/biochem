@@ -126,6 +126,7 @@ def screen_library_pharmacophore(query_sdf: str,
 
     os.makedirs(file_dir, exist_ok=True)
 
+    query_sdf = os.path.join(file_dir, query_sdf)
     query_pml_path = os.path.join(file_dir, f"{project_name}_query.pml")
     scores_csv_path = os.path.join(file_dir, f"{project_name}_scores.csv")
 
