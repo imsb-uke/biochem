@@ -16,16 +16,16 @@ import pandas as pd
 ## validate these first against the actual installed CDPKit version.
 
 def _prepare_molecule(mol):
-    """Run the standard CDPL property-perception sequence needed before
-    pharmacophore generation."""
-    from CDPL import Chem
+    """Run the CDPL property-perception sequence needed before pharmacophore
+    generation and PSD screening-database creation. Verified against a live
+    CDPKit 1.3.0 install (2026-07-18)."""
+    from CDPL import Chem, MolProp
 
-    Chem.perceiveComponents(mol, False)
-    Chem.perceiveSSSR(mol, False)
-    Chem.setRingFlags(mol, False)
-    Chem.calcImplicitHydrogenCounts(mol, False)
-    Chem.perceiveHybridizationStates(mol, False)
-    Chem.setAromaticityFlags(mol, False)
+    Chem.calcBasicProperties(mol, False)
+    MolProp.calcAtomHydrophobicities(mol, False)
+    Chem.calcCIPPriorities(mol, False)
+    Chem.calcAtomCIPConfigurations(mol, False)
+    Chem.calcBondCIPConfigurations(mol, False)
 
 
 def _build_query_pharmacophore(query_sdf: str, query_pml_path: str):
@@ -86,15 +86,20 @@ def _align_library_to_query(query_pharmacophore, psd_path: str, default_score: f
     score_func = Pharm.PharmacophoreFitScore()
 
     best_scores = {}
+    name_cache = {}
 
-    num_entries = db_accessor.getNumMolecules()
+    num_entries = db_accessor.getNumPharmacophores()
     for i in range(num_entries):
-        mol = Chem.BasicMolecule()
-        db_accessor.getMolecule(i, mol)
-        candidate_name = Chem.getName(mol) or f"candidate_{i}"
+        mol_idx = db_accessor.getMoleculeIndex(i)
+
+        if mol_idx not in name_cache:
+            mol = Chem.BasicMolecule()
+            db_accessor.getMolecule(mol_idx, mol)
+            name_cache[mol_idx] = Chem.getName(mol) or f"candidate_{mol_idx}"
+        candidate_name = name_cache[mol_idx]
 
         candidate_pharmacophore = Pharm.BasicPharmacophore()
-        db_accessor.getFeatures(i, candidate_pharmacophore)
+        db_accessor.getPharmacophore(i, candidate_pharmacophore)
 
         alignment.clearEntities(False)
         alignment.addFeatures(candidate_pharmacophore, False)
